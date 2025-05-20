@@ -29,9 +29,9 @@ namespace AccessControlAPI.Controllers
             );
 
             if (user == null)
-                return Unauthorized(new { message = "ACCESS_DENIED" });
+                return Unauthorized(new { status = "ACCESS_DENIED" });
 
-            return Ok(new { message = "ACCESS_GRANTED" });
+            return Ok(new { status = "ACCESS_GRANTED" });
         }
 
         private string ComputeSha256Hash(string rawData)

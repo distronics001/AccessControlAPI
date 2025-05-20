@@ -7,20 +7,11 @@ namespace AccessControlAPI.Models
     public class Client
     {
         public int Id { get; set; }
-
-        [Column("username")]
-        public string Username { get; set; }
-
-        [Column("password_hash")]
-        public string PasswordHash { get; set; }
-
-        [Column("is_active")]
+        public string Username { get; set; } = string.Empty;
+        public string PasswordHash { get; set; } = string.Empty;
         public bool IsActive { get; set; }
-
-        [Column("expiry_date")]
         public DateTime? ExpiryDate { get; set; }
-
-        [Column("created_at")]
         public DateTime CreatedAt { get; set; }
     }
+
 }
