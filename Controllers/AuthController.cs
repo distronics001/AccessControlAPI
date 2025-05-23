@@ -17,21 +17,34 @@ namespace AccessControlAPI.Controllers
         }
 
         [HttpPost("login")]
-        public IActionResult Login([FromBody] LoginRequest request)
-        {
-            var user = _context.Clients.FirstOrDefault(c => c.Username == request.Username);
-            if (user == null)
-                return Ok("INCONNU");
+public IActionResult Login([FromBody] LoginRequest request)
+{
+    try
+    {
+        var user = _context.Clients.FirstOrDefault(c => c.Username == request.Username);
 
-            string enteredHash = ComputeSha256Hash(request.Password);
-            if (!user.PasswordHash.Equals(enteredHash, StringComparison.OrdinalIgnoreCase))
-                return Ok("MAUVAIS_MDP");
+        if (user == null)
+            return Ok("INCONNU");
 
-            if (!user.IsActive)
-                return Ok("COMPTE_DESACTIVE");
+        string enteredHash = ComputeSha256Hash(request.Password);
+        if (!user.PasswordHash.Equals(enteredHash, StringComparison.OrdinalIgnoreCase))
+            return Ok("MAUVAIS_MDP");
 
-            return Ok("ACCESS_GRANTED");
-        }
+        if (!user.IsActive)
+            return Ok("COMPTE_DESACTIVE");
+
+        return Ok("ACCESS_GRANTED");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine("❌ ERREUR DE CONNEXION À MYSQL : " + ex.Message);
+        if (ex.InnerException != null)
+            Console.WriteLine("➡️ Inner: " + ex.InnerException.Message);
+
+        return StatusCode(500, "MYSQL_ERROR: " + ex.Message);
+    }
+}
+
 
         private string ComputeSha256Hash(string rawData)
         {
