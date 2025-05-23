@@ -1,24 +1,24 @@
-﻿using AccessControlAPI.Models;
+using AccessControlAPI.Models;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// ✅ Lire les variables d’environnement Render
+// ✅ 1. Lire les variables d’environnement Render
 builder.Configuration.AddEnvironmentVariables();
 
-// Add services to the container.
+// ✅ 2. Ajouter les services
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// ✅ Configurer MySQL à partir de la variable Render
+// ✅ 3. Récupérer la chaîne de connexion depuis Render
 var connStr = builder.Configuration["CONNSTR_MYSQL"];
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(connStr, ServerVersion.AutoDetect(connStr)));
 
 var app = builder.Build();
 
-// Swagger
+// ✅ 4. Configuration de Swagger
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
@@ -26,7 +26,9 @@ app.UseSwaggerUI(c =>
     c.RoutePrefix = "swagger";
 });
 
+// ✅ 5. Middlewares
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
+
 app.Run();
